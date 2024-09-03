@@ -19,7 +19,7 @@ CepheiPrefs_CFLAGS = \
 	-include Global.h \
 	-I$(ROOT_OBJ_DIR) \
 	-D_CEPHEIPREFS_OBJC_MODULE
-CepheiPrefs_LDFLAGS = -install_name @rpath/CepheiPrefs.framework/CepheiPrefs
+CepheiPrefs_LDFLAGS = -install_name $(CEPHEI_LINK_PREFIX)/CepheiPrefs.framework/CepheiPrefs
 CepheiPrefs_SWIFTFLAGS = \
 	-emit-module-interface-path $(THEOS_OBJ_DIR)/CepheiPrefs.swiftinterface \
 	-I. \
@@ -28,7 +28,7 @@ CepheiPrefs_SWIFTFLAGS = \
 CepheiPrefs_INSTALL_PATH = $(THEOS_PACKAGE_INSTALL_PREFIX)/Library/Frameworks
 
 ifeq ($(CEPHEI_EMBEDDED),1)
-	CepheiPrefs_INSTALL_PATH = @rpath
+	CepheiPrefs_INSTALL_PATH = $(CEPHEI_LINK_PREFIX)
 	CepheiPrefs_LOGOSFLAGS = -c generator=internal
 else ifeq ($(CEPHEI_SIMULATOR),1)
 	CepheiPrefs_LOGOSFLAGS = -c generator=internal

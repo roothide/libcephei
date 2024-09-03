@@ -1,4 +1,5 @@
 module CepheiPrefs_Private {
 	header "GlobalSwift.h"
+	export roothide
 	requires objc
 }

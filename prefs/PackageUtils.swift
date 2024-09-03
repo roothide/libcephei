@@ -13,7 +13,7 @@ public class PackageUtils: NSObject {
 		let format = fields
 			.map { "${\($0)}" }
 			.joined(separator: "\n")
-		guard let output = HBOutputForShellCommand(shellEscape(["\(installPrefix)/usr/bin/dpkg-query", "-Wf", format, package])) else {
+		guard let output = HBOutputForShellCommand(shellEscape([jbroot("/usr/bin/dpkg-query"), "-Wf", format, package])) else {
 			return nil
 		}
 
@@ -36,14 +36,14 @@ public class PackageUtils: NSObject {
 	@objc public class func resolvePackage(forFile file: String) -> String? {
 		// Un-resolve /private/preboot/…/procursus to /var/jb
 		var resolvedURL = URL(fileURLWithPath: file)
-		let installPrefixURL = URL(fileURLWithPath: installPrefix)
+		let installPrefixURL = URL(fileURLWithPath: jbroot("/"))
 		let resolvedPrefix = installPrefixURL.resolvingSymlinksInPath().path
 		if file.hasPrefix(resolvedPrefix) {
 			resolvedURL = installPrefixURL
 				.appendingPathComponent(String(file.dropFirst(resolvedPrefix.count + 1)))
 		}
 
-		guard let output = HBOutputForShellCommand(shellEscape(["\(installPrefix)/usr/bin/dpkg-query", "-S", resolvedURL.path])) else {
+		guard let output = HBOutputForShellCommand(shellEscape([jbroot("/usr/bin/dpkg-query"), "-S", rootfs(resolvedURL.path)])) else {
 			return nil
 		}
 

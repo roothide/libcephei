@@ -1,9 +1,10 @@
 #import "HBOutputForShellCommand.h"
 #import "Cephei-Swift.h"
+#include <roothide.h>
 
 NSString *HBOutputForShellCommandWithReturnCode(NSString *command, int *returnCode) {
 	int status = 0;
-	NSString *result = [HBCommand executeSync:@INSTALL_PREFIX @"/bin/sh" arguments:@[@"-c", command] status:&status];
+	NSString *result = [HBCommand executeSync:jbroot(@"/bin/sh") arguments:@[@"-c", command] status:&status];
 	if (returnCode) {
 		*returnCode = status;
 	}
