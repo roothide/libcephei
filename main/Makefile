@@ -9,12 +9,12 @@ Cephei_CFLAGS = \
 	-fmodule-map-file=module.modulemap \
 	-include Global.h \
 	-DROCKETBOOTSTRAP_LOAD_DYNAMIC
-Cephei_LDFLAGS = -fapplication-extension -install_name @rpath/Cephei.framework/Cephei
+Cephei_LDFLAGS = -fapplication-extension -install_name $(CEPHEI_LINK_PREFIX)/Cephei.framework/Cephei
 Cephei_SWIFTFLAGS = -emit-module-interface-path $(THEOS_OBJ_DIR)/Cephei.swiftinterface
 Cephei_INSTALL_PATH = $(THEOS_PACKAGE_INSTALL_PREFIX)/Library/Frameworks
 
 ifeq ($(CEPHEI_EMBEDDED),1)
-	Cephei_INSTALL_PATH = @rpath
+	Cephei_INSTALL_PATH = $(CEPHEI_LINK_PREFIX)
 	Cephei_LOGOSFLAGS = -c generator=internal
 endif
 

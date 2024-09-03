@@ -79,7 +79,7 @@ public class MastodonAPIClient: NSObject {
 
 	private let cacheURL: URL = {
 		let caches = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-		return caches.appendingPathComponent("Cephei/Avatars")
+		return URL.init(fileURLWithPath: jbroot(caches.path)).appendingPathComponent("Cephei/Avatars")
 	}()
 
 	private func loadCache() {

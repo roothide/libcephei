@@ -1,8 +1,10 @@
 @import Foundation;
 
+#include <roothide.h>
+
 NSBundle *cepheiGlobalBundle;
 
 __attribute__((constructor))
 static void cepheiInit() {
-	cepheiGlobalBundle = [NSBundle bundleWithPath:@INSTALL_PREFIX @"/Library/PreferenceBundles/Cephei.bundle"];
+	cepheiGlobalBundle = [NSBundle bundleWithPath:jbroot(@"/Library/PreferenceBundles/Cephei.bundle")];
 }

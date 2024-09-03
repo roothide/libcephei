@@ -1,6 +1,12 @@
 ifeq ($(CEPHEI_SIMULATOR),1)
 	export TARGET = simulator:latest:15.0
-else
+else ifeq ($(ROOTHIDE),1)
+	export CEPHEI_LINK_PREFIX = @loader_path/.jbroot/Library/Frameworks
+	export THEOS_PACKAGE_SCHEME = roothide
+	export TARGET = iphone:latest:15.0
+	export ARCHS = arm64 arm64e
+else ifeq ($(ROOTLESS),1)
+	export CEPHEI_LINK_PREFIX = @rpath
 	export THEOS_PACKAGE_SCHEME = rootless
 	export TARGET = iphone:latest:15.0
 	export ARCHS = arm64 arm64e
@@ -78,10 +84,10 @@ sdk: stage
 			--filetype=tbd-v4 \
 			--delete-input-file \
 			$(CEPHEI_SDK_DIR)/$$i.framework/$$i; \
-		rm -rf $(THEOS_VENDOR_LIBRARY_PATH)/iphone/rootless/$$i.framework; \
+		rm -rf $(THEOS_VENDOR_LIBRARY_PATH)/iphone/$(THEOS_PACKAGE_SCHEME)/$$i.framework; \
 	done
 	@rm -r $(THEOS_STAGING_DIR)$(THEOS_PACKAGE_INSTALL_PREFIX)/Library/Frameworks/*.framework/{Headers,Modules}
-	@cp -ra $(CEPHEI_SDK_DIR)/* $(THEOS_VENDOR_LIBRARY_PATH)/iphone/rootless/
+	@cp -ra $(CEPHEI_SDK_DIR)/* $(THEOS_VENDOR_LIBRARY_PATH)/iphone/$(THEOS_PACKAGE_SCHEME)/
 	@printf 'This is an SDK for developers wanting to use Cephei.\n\nVersion: %s\n\nFor more information, visit %s.' \
 		"$(THEOS_PACKAGE_BASE_VERSION)" \
 		"https://hbang.github.io/libcephei/" \
@@ -92,5 +98,8 @@ sdk: stage
 ifeq ($(FINALPACKAGE),1)
 before-package:: sdk
 endif
+before-package::
+	@sed -i '' -e "s|@THEOS_PACKAGE_INSTALL_PREFIX@|$(THEOS_PACKAGE_INSTALL_PREFIX)|g" $(THEOS_STAGING_DIR)/DEBIAN/prerm
+	@sed -i '' -e "s|@THEOS_PACKAGE_INSTALL_PREFIX@|$(THEOS_PACKAGE_INSTALL_PREFIX)|g" $(THEOS_STAGING_DIR)/DEBIAN/postinst
 
 .PHONY: docs sdk

@@ -55,7 +55,7 @@ public class ContactViewController: ListController {
 		viewController.setSubject(subject ?? "")
 		viewController.setMessageBody(messageBody ?? "", isHTML: false)
 
-		if let packageListData = HBOutputForShellCommand("\(installPrefix)/usr/bin/dpkg -l")?.data(using: .utf8) {
+		if let packageListData = HBOutputForShellCommand("\(jbroot("/usr/bin/dpkg")) -l")?.data(using: .utf8) {
 			viewController.addAttachmentData(packageListData, mimeType: "text/plain", fileName: "Package List.txt")
 		}
 
