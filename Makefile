@@ -1,3 +1,6 @@
+export DEBUG = 0 #fix weird swift crash
+export TARGET_PRIVATE_FRAMEWORK_PATH := $(abspath PrivateFrameworks)
+
 ifeq ($(CEPHEI_SIMULATOR),1)
 	export TARGET = simulator:latest:15.0
 else ifeq ($(ROOTHIDE),1)
@@ -37,6 +40,10 @@ export ADDITIONAL_CFLAGS = \
 	-DCEPHEI_VERSION="\"$(THEOS_PACKAGE_BASE_VERSION)\"" \
 	-DINSTALL_PREFIX="\"$(THEOS_PACKAGE_INSTALL_PREFIX)\"" \
 	-DCEPHEI_EMBEDDED=$(if $(CEPHEI_EMBEDDED),1,0)
+
+#Fix the library crash on iOS 15 when built with the latest Xcode
+export ADDITIONAL_CFLAGS += -fno-ptrauth-objc-class-ro
+
 export ADDITIONAL_SWIFTFLAGS = \
 	-F$(THEOS_OBJ_DIR) \
 	-enable-library-evolution \

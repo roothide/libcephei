@@ -46,7 +46,25 @@ int main(int argc, char *argv[]) {
 		identifier = @".GlobalPreferences";
 	}
 
-	HBPreferences *preferences = [HBPreferences preferencesForIdentifier:identifier];
+	HBPreferences *preferences;
+
+	if ([[NSProcessInfo processInfo].environment[@"HB_PREFS_FORCE_IPC"] isEqualToString:@"1"]) {
+		Class ipcClass = NSClassFromString(@"HBPreferencesIPC");
+		if (!ipcClass) {
+			fprintf(stderr, "hbprefs: HBPreferencesIPC is unavailable in the loaded Cephei framework.\n");
+			return 1;
+		}
+		preferences = [[ipcClass alloc] initWithIdentifier:identifier];
+		if (!preferences || ![preferences isKindOfClass:ipcClass]) {
+			fprintf(stderr, "hbprefs: could not create the IPC backend for %s.\n", identifier.UTF8String);
+			return 1;
+		}
+		fprintf(stderr, "hbprefs: backend=%s\n", NSStringFromClass(preferences.class).UTF8String);
+	} else {
+		preferences = [HBPreferences preferencesForIdentifier:identifier];
+	}
+
+
 	NSString *mode = arguments[1];
 
 	if ([mode isEqualToString:@"read"]) {

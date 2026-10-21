@@ -50,7 +50,7 @@ static BOOL isSystemApp;
 }
 
 - (instancetype)initWithIdentifier:(NSString *)identifier {
-	if (!identifier || identifier.count == 0) {
+	if (!identifier || identifier.length == 0) {
 		os_log(OS_LOG_DEFAULT, "Empty or nil identifier passed to -[HBPreferences initWithIdentifier:]");
 		return nil;
 	}
